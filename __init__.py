@@ -1,16 +1,9 @@
 # -*- coding: utf-8 -*-
-import pandas as pd, os, unicodedata, re, collections
-"""
-§ 前言
+"""下面我们进行一次计算。"""
 
-opt → struct → elecstruct. 
+# § 不重要
 
-给定 struct Pb19S44，考虑其 elecstruct. 
-
-考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。考虑近似 approx：材料，求值模式，简化近似，辅助行为。
-"""
-
-# § Constants
+import pandas as pd, os, unicodedata, re, collections, subprocess
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -21,11 +14,9 @@ def slugify(value):
     """
     Make a string URL- and filename-friendly.
 
-    Normalizes string into unicode, converts to lowercase, removes non-alpha-nu-
-    merics, and converts spaces to hyphens.
+    Normalizes string into unicode, converts to lowercase, removes non-alpha-numeric, and converts spaces to hyphens.
 
-    Taken from django/utils/text.py. In Django, a "slug" is a URL- and filename-
-    friendly string.
+    Taken from django/utils/text.py. In Django, a "slug" is a URL- and filename-friendly string.
 
     :param unicode value: String to be converted
     :return: Filename-friendly string
@@ -34,12 +25,20 @@ def slugify(value):
 
     """
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore')
-    value = re.sub('[^\w\s-]', '', value).strip().lower()
-    value = re.sub('[-\s]+', '-', value)
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    value = re.sub(r'[-\s]+', '-', value)
     return value
 
 
-"""§ struct, approx"""
+"""
+§ 
+
+opt → struct → elecstruct
+
+给定 struct Pb19S44，考虑其 elecstruct. 
+
+考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。考虑近似：材料，求值模式，简化近似，辅助行为。
+"""
 
 
 class Struct(object):
@@ -47,7 +46,7 @@ class Struct(object):
     A struct is defined by a list of atomic coordinates, and optionally the repeat pattern.
 
     :ivar np.array(3,3) A: translation vector of crystal cell, or None
-    :ivar pd.DataFrame(x,y,z,symbol) X: atomic coordinates
+    :ivar pd.DataFrame(x,y,z,symbol) X: cartesian coordinates
 
     """
 
@@ -56,6 +55,64 @@ class Struct(object):
         self.A = None
         self.X = pd.DataFrame(columns=['x', 'y', 'z', 'symbol'])
 
+
+struct = Struct()
+
+approx = {"istart": 1}
+
+
+# §
+# 完成计算本应是一行代码vasp(struct, approx)，但：
+
+# 输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR (struct, approx), CHG
+os.chdir(approx["path"])
+
+with open("INCAR", "w") as file:
+    for k, v in approx.items():
+        file.write("{k} = {v}\n")
+
+to_poscar(struct)
+
+template("KPOINTS", approx)
+
+for symbol in struct.stoichiometry.keys():
+    to_pot(symbol)
+
+# 输出脚本文件
+template("run", approx)
+subprocess.call("./run")
+
+
+# § 图式关系
+
+UID_OBJ = {}
+
+PARENT_CHILD = []
+
+FROM_TO = []
+
+
+uid = UUID.UUID4()
+UID_OBJ[uid] = _
+PARENT_CHILD[__] = _
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# § Extensions
 
 class Approx(collections.MutableMapping):
     """
@@ -95,41 +152,12 @@ class Approx(collections.MutableMapping):
     def exec(self, expr):
         exec(expr, globals(), self)
 
+# 例：
+# with open("approx_exec_vasp", "r") as file:
+#     for line in file:
+#         approx.exec(line)
 
-"""§ 求解"""
-# 完成计算本应是一行代码，但 i) Approx → Bash转换， ii) 本地 → 远程转换 造成一些程序细节。
-
-
-def convert_approx_to_vasp(struct, approx):
-    """
-    1. 规则变换
-    2. 输出文本文件、脚本文件
-
-    """
-    return path
-
-def submit(path):
-    ./submit
-
-
-def retrieve(path):
-    ./retrieve
-
-
-"""§ 记录"""
-# 图式数据库
-
-
-UID = {}
-
-
-IN = {}
-
-
-ARC = {}
-
-
-# § Extensions
+# ----
 
 readyfunc_func = []
 
