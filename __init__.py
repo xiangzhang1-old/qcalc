@@ -10,14 +10,11 @@ opt → struct → elecstruct.
 考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。考虑近似 approx：材料，求值模式，简化近似，辅助行为。
 """
 
-"""
-§ 附录
-"""
+# § Constants
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
-periodic_table = pd.read_excel(script_dir + '/periodic_table.xlsx')
-"""Periodic table"""
+periodic_table = pd.read_excel(script_dir + '/periodic_table.xlsx')     #: pd.DataFrame, Periodic table
 
 
 def slugify(value):
@@ -42,9 +39,7 @@ def slugify(value):
     return value
 
 
-"""
-§ struct, approx
-"""
+"""§ struct, approx"""
 
 
 class Struct(object):
@@ -73,9 +68,8 @@ class Approx(collections.MutableMapping):
 
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self):
         self._dict = dict()
-        self.update(dict(*args, **kwargs))
 
     def __getitem__(self, key):
         if key in self._dict:
@@ -102,21 +96,56 @@ class Approx(collections.MutableMapping):
         exec(expr, globals(), self)
 
 
-"""
-§ VASP
-"""
-
-# 完成计算本应是一行代码，但 i) Python → Bash转换， ii) 本地 → 远程转换 造成一些程序细节。
-
-def convert_approx_to_incar():
-    with open("INCAR", "w") as f:
-        f.write("Hello, world!")
+"""§ 求解"""
+# 完成计算本应是一行代码，但 i) Approx → Bash转换， ii) 本地 → 远程转换 造成一些程序细节。
 
 
+def convert_approx_to_vasp(struct, approx):
+    """
+    1. 规则变换
+    2. 输出文本文件、脚本文件
 
-"""
-§§ SLURM
-"""
+    """
+    return path
+
+def submit(path):
+    ./submit
+
+
+def retrieve(path):
+    ./retrieve
+
+
+"""§ 记录"""
+# 图式数据库
+
+
+UID = {}
+
+
+IN = {}
+
+
+ARC = {}
+
+
+# § Extensions
+
+readyfunc_func = []
+
+# ----
+
+def suggest_host():
+    pass
+
+CLONE = []
+
+def add_clone():
+    pass
+
+def cleanup_clone():
+    pass
+
 
 """
 § 引文
