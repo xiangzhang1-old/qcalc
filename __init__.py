@@ -4,7 +4,6 @@
 # 不重要
 
 import pandas as pd, os, unicodedata, re, collections, subprocess
-import functools
 import ase, ase.io
 
 LIB_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -33,7 +32,6 @@ def slugify(value):
     return value
 
 """---------------------------------------------------------------------------------------------------------------------
-
 opt → struct → elecstruct
 
 给定 struct Pb19S44，考虑其 elecstruct. 
@@ -65,7 +63,7 @@ class Struct(object):
 # - args 实现为 opt = True
 # - hidden = {'hidden'} 不 print
 # - exec 后确认没有覆盖
-# - exec 文件用 # 分块，来回走三趟。
+# - exec 文件用 # 分块，block-by-block execution，来回走三趟。
 
 # d = {}
 
@@ -89,36 +87,10 @@ def exec_block_ignore(s, d):
     except (AssertionError, NameError) as e:
         pass
 
-def exec_shortargs_hideargs_noquote(s, d):  # helper
-    """
-    Convenience function. Accepts 'opt' and 'spin=fm', hides opt, evaluates [1,2,3] and unquoted string. No overwrite.
-    """
-    old = d.copy()
-    if '=' not in s:                            # opt
-        assert s == slugify(s)                  # is clean
-        d[s] = True
-        d['hidden'].add(s)                      # hides opt
-    elif '=' in s:                              # spin=fm
-        l, r = s.split('=')
-        assert l == slugify(l)
-        try:
-            d[l] = eval(r)                      # evaluates [1,2,3]
-        except NameError:
-            d[l] = r                            # unquoted string
-    assert old.items() <= d.items()             # no overwrite
-
-
-
-
-
-
-
-
-# getopt.exec("pbs=qd=True; opt=True; ediffg=1E-3")
-#
-# with open("getopt.vasp.py", "r") as file:     # if opt:   ediff=1E-4  # bourbaki
-#     for line in file:
-#         getopt.exec(line)
+# for i in range(3):
+#     with open("d.vasp.conf.py", "r") as file:
+#         for block in file.read().split('#'):
+#             exec_block_ignore(line) if i<2 else exec_block_raise(line)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # vasp(struct, getopt)
@@ -144,20 +116,23 @@ def _struct_to_potcar(struct):
         # we will repeatedly use this trick: str.format(dict) and f"{var}"
         subprocess.run(f"cat {fp} >> POTCAR", shell=True)
 
-def getopt_struct_to_vasp(getopt, struct):
+def d_struct_to_vasp(d, struct):
     """
-    :param Getopt getopt:
+    输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR (struct, getopt), CHG
+    :param dict d:
     :param Struct struct:
-    :return: converts getopt, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
+    :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
     """
-    os.chdir(getopt['path'])
+    os.chdir(d['path'])
     #
     with open("INCAR", "w") as file:
-        for k, v in getopt.items():
-            if not k.startswith('_'):
+        for k, v in d.items():
+            if k not in d['hidden']:
                 file.write("{k} = {v}\n")
+    #
 
-# 输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR (struct, getopt), CHG
+
+
 
 
 
