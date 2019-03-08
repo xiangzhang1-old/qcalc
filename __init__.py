@@ -31,6 +31,19 @@ def slugify(value):
     value = re.sub(r'[-\s]+', '-', value)
     return value
 
+def template(i, o, d):
+    """
+    str.format(i, d) -> o
+    :param str i: path
+    :param str o: path
+    :param dict d:
+    """
+    with open(i, "r") as i:
+        with open(o, "w") as o:
+            o.write(
+                i.read().format(**d)
+            )
+
 """---------------------------------------------------------------------------------------------------------------------
 opt → struct → elecstruct
 
@@ -88,9 +101,9 @@ def exec_block_ignore(s, d):
         pass
 
 # for i in range(3):
-#     with open("d.vasp.conf.py", "r") as file:
+#     with open("d.exec.vasp.py", "r") as file:
 #         for block in file.read().split('#'):
-#             exec_block_ignore(line) if i<2 else exec_block_raise(line)
+#             exec_block_ignore('#'+block) if i<2 else exec_block_raise('#'+block)
 
 # ----------------------------------------------------------------------------------------------------------------------
 # vasp(struct, getopt)
@@ -113,13 +126,13 @@ def _struct_to_potcar(struct):
     """
     for symbol in struct.stoichiometry:
         fp = POTCAR_PATH + periodic_table_lookup(symbol, "pot") + "/POTCAR"
-        # we will repeatedly use this trick: str.format(dict) and f"{var}"
+        # we will repeatedly use this trick: str.format(**dict) and f"{var}"
         subprocess.run(f"cat {fp} >> POTCAR", shell=True)
 
 def d_struct_to_vasp(d, struct):
     """
     输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR (struct, getopt), CHG
-    :param dict d:
+    :param dict d: { kpoints: ["molecule", ...] }
     :param Struct struct:
     :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
     """
@@ -130,22 +143,29 @@ def d_struct_to_vasp(d, struct):
             if k not in d['hidden']:
                 file.write("{k} = {v}\n")
     #
+    _struct_to_poscar(struct)
+    #
+    template(
+        i = f"{LIB_PATH}/KPOINTS.template.{d['kpoints'][0]}",
+        o = "KPOINTS",
+        d = d
+    )
+    #
+    _struct_to_potcar(struct)
+
+def d_to_slurm(d):
+    template(
+        i = f"{LIB_PATH}/submit.template.vasp.{d['host']}",
+        o = "submit",
+        d = d
+    )
+    template(
+        i = f"{LIB_PATH}/job.template.vasp.{d['host']}",
+        o = "job",
+        d = d
+    )
 
 
-
-
-
-
-to_poscar(struct)
-
-template("KPOINTS", getopt)
-
-for symbol in struct.stoichiometry.keys():
-    to_pot(symbol)
-
-# 输出脚本文件
-template("run", getopt)
-subprocess.call("./run")
 
 
 # § 图式关系
@@ -199,14 +219,3 @@ def add_clone():
 
 def cleanup_clone():
     pass
-
-
-"""
-§ 引文
-
-1. InDesign 的默认设置是 1/4 的全角空格宽度（遵从 JIS），也就是约等于一个半角空格。源：zhihu 19587406
-2. If provided, `locals` can be any mapping object. 源：Python3 官方文档，exec()
-3. None of the built-in methods will call your custom __getitem__ / __setitem__, though. If you need total control over 
-these, create a custom class that implements the collections.MutableMapping abstract base class instead. 
-源：stackoverflow 7148419。
-"""
