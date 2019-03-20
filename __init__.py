@@ -131,7 +131,7 @@ def _struct_to_potcar(struct):
 
 def d_struct_to_vasp(d, struct):
     """
-    输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR (struct, getopt), CHG
+    输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR, CHG
     :param dict d: { kpoints: ["molecule", ...] }
     :param Struct struct:
     :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
@@ -145,30 +145,16 @@ def d_struct_to_vasp(d, struct):
     #
     _struct_to_poscar(struct)
     #
-    template(
-        i = f"{LIB_PATH}/KPOINTS.template.{d['kpoints'][0]}",
-        o = "KPOINTS",
-        d = d
-    )
+    template(i = f"{LIB_PATH}/KPOINTS.template.{d['kpoints'][0]}", o = "KPOINTS", d = d)
     #
     _struct_to_potcar(struct)
 
 def d_to_slurm(d):
-    template(
-        i = f"{LIB_PATH}/submit.template.vasp.{d['host']}",
-        o = "submit",
-        d = d
-    )
-    template(
-        i = f"{LIB_PATH}/job.template.vasp.{d['host']}",
-        o = "job",
-        d = d
-    )
+    template(i = f"{LIB_PATH}/submit.template.vasp.{d['host']}", o = "submit", d = d)
+    template(i = f"{LIB_PATH}/job.template.vasp.{d['host']}", o = "job", d = d)
 
-
-
-
-# § 图式关系
+# ----------------------------------------------------------------------------------------------------------------------
+# § 关系
 
 UID_OBJ = {}
 
