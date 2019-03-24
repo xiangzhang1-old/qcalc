@@ -12,5 +12,5 @@ elif isinstance(rho0, str):
 elif isinstance(rho, str):
     icharg = 11
 #
-istart; icharg;
+assert istart
 #
