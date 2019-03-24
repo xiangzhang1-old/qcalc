@@ -154,27 +154,10 @@ def d_to_slurm(d):
     template(i = f"{LIB_PATH}/job.template.vasp.{d['host']}", o = "job", d = d)
 
 # ----------------------------------------------------------------------------------------------------------------------
-# § 关系
-
-UID_OBJ = {}
-
-PARENT_CHILD = []
-
-FROM_TO = []
-
-
-uid = UUID.UUID4()
-UID_OBJ[uid] = _
-PARENT_CHILD[__] = _
-...
-
-
-
-
-
-
-
-
+uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # 关系 (uuid, object)
+prev_next = pd.DataFrame(columns=['prev', 'next'])                          # 关系 (uuid "prev", uuid "next")
+parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
+original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # 关系 (uuid "original", uuid "doppelganger")
 
 
 
