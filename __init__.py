@@ -33,9 +33,9 @@ def slugify(value):
 
 def template(i, o, d):
     """
-    str.format(i, d) -> o
-    :param str i: path
-    :param str o: path
+    we will repeatedly use this trick: str.format(**dict) and f"{var}"
+    :param str i: input file path
+    :param str o: output file path
     :param dict d:
     """
     with open(i, "r") as i:
@@ -108,30 +108,11 @@ def exec_block_ignore(s, d):
 # ----------------------------------------------------------------------------------------------------------------------
 # vasp(struct, getopt)
 
-# 完成计算本应是上面一行代码，但有些平凡事务：
-
-def _struct_to_poscar(struct):
-    """
-    :param Struct struct:
-    :return: writes POSCAR4 to current directory
-    """
-    stoichiometry = ''.join([f'{k}{v}' for k,v in struct.stoichiometry.items()])
-    atoms = ase.Atoms(symbols=struct.X['symbol'], positions=struct.X[['x','y','z']], cell=struct.A)
-    ase.io.write("POSCAR", images=atoms, format="vasp")
-
-def _struct_to_potcar(struct):
-    """
-    :param Struct struct:
-    :return: writes POTCAR to current directory
-    """
-    for symbol in struct.stoichiometry:
-        fp = POTCAR_PATH + periodic_table_lookup(symbol, "pot") + "/POTCAR"
-        # we will repeatedly use this trick: str.format(**dict) and f"{var}"
-        subprocess.run(f"cat {fp} >> POTCAR", shell=True)
+# 完成计算本应是上面一行代码，但有些平凡的转换：
 
 def d_struct_to_vasp(d, struct):
     """
-    输出文本文件: INCAR, POSCAR, KPOINTS, POTCAR, CHG
+    输出文本文件: INCAR, POSCAR4, KPOINTS, POTCAR, CHG
     :param dict d: { kpoints: ["molecule", ...] }
     :param Struct struct:
     :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
@@ -143,11 +124,14 @@ def d_struct_to_vasp(d, struct):
             if k not in d['hidden']:
                 file.write("{k} = {v}\n")
     #
-    _struct_to_poscar(struct)
+    atoms = ase.Atoms(symbols=struct.X['symbol'], positions=struct.X[['x', 'y', 'z']], cell=struct.A)
+    ase.io.write("POSCAR", images=atoms, format="vasp")
     #
     template(i = f"{LIB_PATH}/KPOINTS.template.{d['kpoints'][0]}", o = "KPOINTS", d = d)
     #
-    _struct_to_potcar(struct)
+    for symbol in struct.stoichiometry:
+        fp = POTCAR_PATH + periodic_table_lookup(symbol, "pot") + "/POTCAR"
+        subprocess.run(f"cat {fp} >> POTCAR", shell=True)
 
 def d_to_slurm(d):
     template(i = f"{LIB_PATH}/submit.template.vasp.{d['host']}", o = "submit", d = d)
