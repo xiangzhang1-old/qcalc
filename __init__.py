@@ -112,7 +112,7 @@ def exec_block_ignore(s, d):
 
 def d_struct_to_vasp(d, struct):
     """
-    输出文本文件: INCAR, POSCAR4, KPOINTS, POTCAR, CHG
+    输出文本文件: INCAR, POSCAR4, KPOINTS, POTCAR, CHGCAR/WAVECAR
     :param dict d: { kpoints: ["molecule", ...] }
     :param Struct struct:
     :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
@@ -132,6 +132,10 @@ def d_struct_to_vasp(d, struct):
     for symbol in struct.stoichiometry:
         fp = POTCAR_PATH + periodic_table_lookup(symbol, "pot") + "/POTCAR"
         subprocess.run(f"cat {fp} >> POTCAR", shell=True)
+    #
+    if 'phi0' in d:
+
+
 
 def d_to_slurm(d):
     template(i = f"{LIB_PATH}/submit.template.vasp.{d['host']}", o = "submit", d = d)
