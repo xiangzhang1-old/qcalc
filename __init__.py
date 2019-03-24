@@ -71,13 +71,21 @@ class Struct(object):
         return collections.OrderedDict(self.X.symbol.value_counts(ascending=True))
 
 
-"""考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。考虑近似：材料，求值模式，简化近似，辅助行为。"""
-# 考虑 args, kwargs 的规则变换，实现为 exec + locals。改：
-# - args 实现为 opt = True
-# - hidden = {'hidden'} 不 print
-# - exec 后确认没有覆盖
-# - exec 文件用 # 分块，block-by-block execution，来回走三趟。
+"""
+考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。计算参数：材料，求值模式，简化近似，辅助行为。一一对应 (args = True) kwargs，
+其规则变换 exec(kwargs)。
 
+前者：
+hidden = {'hidden'}：非官方 kwargs
+phi0 = path, rho0 = 0, rho = path：KS波函数、电荷密度的初值
+kpoints = [template, param, ...]：KPOINTS 定式与参数
+path：文件夹路径
+
+
+后者：
+exec 禁止覆盖
+exec 文件用 # 分块，三趟
+"""
 # d = {}
 
 def exec_block_raise(s, d):
@@ -113,7 +121,7 @@ def exec_block_ignore(s, d):
 def d_struct_to_vasp(d, struct):
     """
     输出文本文件: INCAR, POSCAR4, KPOINTS, POTCAR, CHGCAR/WAVECAR
-    :param dict d: { kpoints: ["molecule", ...] }
+    :param dict d:
     :param Struct struct:
     :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
     """
@@ -133,9 +141,8 @@ def d_struct_to_vasp(d, struct):
         fp = POTCAR_PATH + periodic_table_lookup(symbol, "pot") + "/POTCAR"
         subprocess.run(f"cat {fp} >> POTCAR", shell=True)
     #
-    if 'phi0' in d:
-
-
+    for path in [d[k] for k in ['rho', 'rho0', 'phi0'] if k in d]:
+        subprocess.run(f"rsync -a -h --info=progress2 {path} .", shell=True)
 
 def d_to_slurm(d):
     template(i = f"{LIB_PATH}/submit.template.vasp.{d['host']}", o = "submit", d = d)
@@ -156,23 +163,13 @@ original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # �
 
 # § Extensions
 
-
-
-
-
-# ----
-
-readyfunc_func = []
+ready_run = []
 
 # ----
 
 def suggest_host():
     pass
 
-CLONE = []
+# ----
 
-def add_clone():
-    pass
-
-def cleanup_clone():
-    pass
+# plugin: 自动继承 struct，自动覆盖 phi0, rho0, rho
