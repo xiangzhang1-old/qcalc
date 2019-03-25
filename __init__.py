@@ -16,21 +16,6 @@ def periodic_table_lookup(symbol, column, periodic_table = pd.read_excel(LIB_PAT
     """
     return periodic_table.loc[periodic_table.symbol == symbol, column].values[0]
 
-def slugify(value):
-    """
-    Make a string URL- and filename-friendly.
-    Taken from django/utils/text.py. In Django, a "slug" is a URL- and filename-friendly string.
-
-    :param unicode value: string to be converted
-    :return: filename-friendly string
-    :rtype: unicode
-    :raises TypeError: if value is not unicode string
-    """
-    value = unicodedata.normalize('NFKD', value)
-    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
-    value = re.sub(r'[-\s]+', '-', value)
-    return value
-
 def template(i, o, d):
     """
     we will repeatedly use this trick: str.format(**dict) and f"{var}"
@@ -159,23 +144,3 @@ uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # �
 prev_next = pd.DataFrame(columns=['prev', 'next'])                          # 关系 (uuid "prev", uuid "next")
 parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
 original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # 关系 (uuid "original", uuid "doppelganger")
-
-
-
-
-
-
-
-
-# § Extensions
-
-ready_run = []
-
-# ----
-
-def suggest_host():
-    pass
-
-# ----
-
-# plugin: 自动继承 struct，自动覆盖 phi0, rho0, rho

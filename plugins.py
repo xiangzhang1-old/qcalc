@@ -15,3 +15,26 @@ def exec_short(s, d):  # helper
         except NameError:
             d[l] = r                            # unquoted string
     assert old.items() <= d.items()             # no overwrite
+
+
+def slugify(value):
+    """
+    Make a string URL- and filename-friendly.
+    Taken from django/utils/text.py. In Django, a "slug" is a URL- and filename-friendly string.
+
+    :param unicode value: string to be converted
+    :return: filename-friendly string
+    :rtype: unicode
+    :raises TypeError: if value is not unicode string
+    """
+    value = unicodedata.normalize('NFKD', value)
+    value = re.sub(r'[^\w\s-]', '', value).strip().lower()
+    value = re.sub(r'[-\s]+', '-', value)
+    return value
+
+def suggest_host():
+    pass
+
+# plugin: 自动继承 struct，自动覆盖 phi0, rho0, rho
+
+ready_run = []
