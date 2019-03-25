@@ -73,29 +73,16 @@ class Struct(object):
 
 """
 考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。计算参数：材料，求值模式，简化近似，辅助行为。一一对应 (args = True) kwargs，
-其规则变换 exec(kwargs)。
-
-前者：
+其规则变换对应 exec(kwargs)。
 hidden = {'hidden'}：非官方 kwargs
 phi0 = path, rho0 = 0, rho = path：KS波函数、电荷密度的初值
 kpoints = [template, param, ...]：KPOINTS 定式与参数
 path：文件夹路径
-
-后者：
-exec 禁止覆盖
-exec 文件用 # 分块，三趟
 """
 class D(collections.MutableMapping):
     """
-    考察 args, kwargs 的规则变换，规则为 python改：[2,3]
-
-    - args实现为args=True
-    - _变量名前缀表示"隐藏"，__getitem__时一并搜索。
-    - __getitem__未搜索到时返回None。
-    - __setitem__时禁止覆盖。
-
+    禁止覆盖。KeyError返回None。
     """
-
     def __init__(self, *args, **kwargs):
         self._dict = dict()
         self.update(dict(*args, **kwargs))
@@ -103,8 +90,6 @@ class D(collections.MutableMapping):
     def __getitem__(self, key):
         if key in self._dict:
             return self._dict[key]
-        if key.startswith('_') and key[1:] in self._dict:
-            return self._dict[key[1:]]
         return None
 
     def __setitem__(self, key, value):
@@ -113,7 +98,7 @@ class D(collections.MutableMapping):
         self._dict[key] = value
 
     def __delitem__(self, key):
-        raise SyntaxError("overwrite")
+        del self._dict[key]
 
     def __iter__(self):
         return iter(self._dict)
@@ -124,30 +109,15 @@ class D(collections.MutableMapping):
     def exec(self, expr):
         exec(expr, globals(), self)
 
-def exec_block_raise(s, d):
-    """
-    Executes s, write variable to dictionary d, no overwrite.
-
-    :param str s: multi-line code block to be executed
-    :param dict d: args-kwargs to be updated
-    """
-    old = d.copy()
-    exec(s, globals(), d)
-    assert old.items() <= d.items()
-
-def exec_block_ignore(s, d):
-    """
-    Same as exec_block_raise, except Overwrite, NameError, AssertionError are silently ignored.
-    """
-    try:
-        exec_block_raise(s, d)
-    except (AssertionError, NameError) as e:
-        pass
-
+# exec 文件用 # 分块
 # for i in range(3):
 #     with open("d.exec.vasp.py", "r") as file:
 #         for block in file.read().split('#'):
-#             exec_block_ignore('#'+block) if i<2 else exec_block_raise('#'+block)
+#             try:
+#                 d.exec('#'+block)
+#             except:
+#                 if i == 2:
+#                     raise
 
 # ----------------------------------------------------------------------------------------------------------------------
 # vasp(struct, getopt)

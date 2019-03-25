@@ -12,5 +12,5 @@ elif isinstance(rho0, str):
 elif isinstance(rho, str):
     icharg = 11
 #
-assert istart
+assert None not in [istart, icharg]
 #
