@@ -85,7 +85,44 @@ path：文件夹路径
 exec 禁止覆盖
 exec 文件用 # 分块，三趟
 """
-# d = {}
+class D(collections.MutableMapping):
+    """
+    考察 args, kwargs 的规则变换，规则为 python改：[2,3]
+
+    - args实现为args=True
+    - _变量名前缀表示"隐藏"，__getitem__时一并搜索。
+    - __getitem__未搜索到时返回None。
+    - __setitem__时禁止覆盖。
+
+    """
+
+    def __init__(self, *args, **kwargs):
+        self._dict = dict()
+        self.update(dict(*args, **kwargs))
+
+    def __getitem__(self, key):
+        if key in self._dict:
+            return self._dict[key]
+        if key.startswith('_') and key[1:] in self._dict:
+            return self._dict[key[1:]]
+        return None
+
+    def __setitem__(self, key, value):
+        if key in self._dict and self._dict[key] != value:
+            raise SyntaxError("overwrite")
+        self._dict[key] = value
+
+    def __delitem__(self, key):
+        raise SyntaxError("overwrite")
+
+    def __iter__(self):
+        return iter(self._dict)
+
+    def __len__(self):
+        return len(self._dict)
+
+    def exec(self, expr):
+        exec(expr, globals(), self)
 
 def exec_block_raise(s, d):
     """
