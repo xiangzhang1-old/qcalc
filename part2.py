@@ -1,3 +1,5 @@
+import unicodedata, re
+
 def exec_short(s, d):  # helper
     """
     Convenience function. Accepts 'opt' and 'spin=fm', hides opt, evaluates [1,2,3] and unquoted string. No overwrite.
@@ -16,7 +18,6 @@ def exec_short(s, d):  # helper
             d[l] = r                            # unquoted string
     assert old.items() <= d.items()             # no overwrite
 
-
 def slugify(value):
     """
     Make a string URL- and filename-friendly.
@@ -32,9 +33,31 @@ def slugify(value):
     value = re.sub(r'[-\s]+', '-', value)
     return value
 
+# ----------------------------------------------------------------------------------------------------------------------
+# 开始讨论吧！
+# bash, python 一轮一轮。prev, sinfo, sbatch, rsync。
+# 常见代码块的自动化
+
+
+
+def ready1(d, struct):
+    return 前节点已完成
+
+def run1(d, struct):
+    #
+    d.exec_file("d.exec.vasp.py")
+    #
+    d_struct_to_vasp(d, struct)
+    d_to_slurm(d)
+    #
+    subprocess.run("submit")
+
+# ----------------------------------------------------------------------------------------------------------------------
+original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # 关系 (uuid "original", uuid "doppelganger")
+# ----------------------------------------------------------------------------------------------------------------------
 def suggest_host():
     pass
 
+# ----------------------------------------------------------------------------------------------------------------------
 # plugin: 自动继承 struct，自动覆盖 phi0, rho0, rho
 
-ready_run = []

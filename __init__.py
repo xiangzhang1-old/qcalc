@@ -3,7 +3,7 @@
 # ----------------------------------------------------------------------------------------------------------------------
 # 不重要
 
-import pandas as pd, os, unicodedata, re, collections, subprocess
+import pandas as pd, os, collections, subprocess
 import ase, ase.io
 
 LIB_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -18,7 +18,7 @@ def periodic_table_lookup(symbol, column, periodic_table = pd.read_excel(LIB_PAT
 
 def template(i, o, d):
     """
-    we will repeatedly use this trick: str.format(**dict) and f"{var}"
+    i.format(d)
     :param str i: input file path
     :param str o: output file path
     :param dict d:
@@ -94,18 +94,19 @@ class D(collections.MutableMapping):
     def exec(self, expr):
         exec(expr, globals(), self)
 
-# exec 文件用 # 分块
-# for i in range(3):
-#     with open("d.exec.vasp.py", "r") as file:
-#         for block in file.read().split('#'):
-#             try:
-#                 d.exec('#'+block)
-#             except:
-#                 if i == 2:
-#                     raise
+    # exec 文件用 # 分块
+    def exec_file(self, file):
+        for i in range(3):
+            with open(file, "r") as file:
+                for block in file.read().split('#'):
+                    try:
+                        self.exec('#' + block)
+                    except:
+                        if i == 2:
+                            raise
 
 # ----------------------------------------------------------------------------------------------------------------------
-# vasp(struct, getopt)
+# vasp(d, struct)
 
 # 完成计算本应是上面一行代码，但有些平凡的转换：
 
@@ -143,4 +144,10 @@ def d_to_slurm(d):
 uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # 关系 (uuid, object)
 prev_next = pd.DataFrame(columns=['prev', 'next'])                          # 关系 (uuid "prev", uuid "next")
 parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
-original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # 关系 (uuid "original", uuid "doppelganger")
+
+def object2s(relation, column1, object1, column2):
+    # 求所有 object2 使得 relation(column1 = object1, column2 = object2) 成立
+    uuid1 = uuid_object.query("object = @object1").uuid.item()
+    uuid2 = relation.query(f"{column1} = {uuid1}")[column2].item()
+    object2s = uuid_object.query(f"uuid = {uuid2}").object.item()
+    return object2s
