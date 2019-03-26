@@ -62,7 +62,8 @@ class Struct(object):
 hidden = {'hidden'}：非官方 kwargs
 phi0 = path, rho0 = 0, rho = path：KS波函数、电荷密度的初值
 kpoints = [template, param, ...]：KPOINTS 定式与参数
-path：文件夹路径
+path：文件夹路
+type = vasp：
 """
 class D(collections.MutableMapping):
     """
