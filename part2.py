@@ -38,7 +38,10 @@ def slugify(value):
 # 常见代码块的自动化
 
 
+status = [0, 1, ..., 'Complete', 'Error']
 
+# optionally
+def is_prev_status_complete():
 def ready1(d, struct):
     return 前节点已完成
 

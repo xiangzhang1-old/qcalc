@@ -107,41 +107,6 @@ class D(collections.MutableMapping):
                             raise
 
 # ----------------------------------------------------------------------------------------------------------------------
-# vasp(d, struct)
-
-# 完成计算本应是上面一行代码，但有些平凡的转换：
-
-def d_struct_to_vasp(d, struct):
-    """
-    输出文本文件: INCAR, POSCAR4, KPOINTS, POTCAR, CHGCAR/WAVECAR
-    :param dict d:
-    :param Struct struct:
-    :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
-    """
-    os.chdir(d['path'])
-    #
-    with open("INCAR", "w") as file:
-        for k, v in d.items():
-            if k not in d['hidden']:
-                file.write("{k} = {v}\n")
-    #
-    atoms = ase.Atoms(symbols=struct.X['symbol'], positions=struct.X[['x', 'y', 'z']], cell=struct.A)
-    ase.io.write("POSCAR", images=atoms, format="vasp")
-    #
-    template(i = f"{LIB_PATH}/KPOINTS.template.{d['kpoints'][0]}", o = "KPOINTS", d = d)
-    #
-    for symbol in struct.stoichiometry:
-        fp = POTCAR_PATH + periodic_table_lookup(symbol, "pot") + "/POTCAR"
-        subprocess.run(f"cat {fp} >> POTCAR", shell=True)
-    #
-    for path in [d[k] for k in ['rho', 'rho0', 'phi0'] if k in d]:
-        subprocess.run(f"rsync -a -h --info=progress2 {path} .", shell=True)
-
-def d_to_slurm(d):
-    template(i = f"{LIB_PATH}/submit.template.vasp.{d['host']}", o = "submit", d = d)
-    template(i = f"{LIB_PATH}/job.template.vasp.{d['host']}", o = "job", d = d)
-
-# ----------------------------------------------------------------------------------------------------------------------
 uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # 关系 (uuid, object)
 prev_next = pd.DataFrame(columns=['prev', 'next'])                          # 关系 (uuid "prev", uuid "next")
 parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
