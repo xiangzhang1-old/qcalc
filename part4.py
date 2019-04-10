@@ -1,6 +1,6 @@
 import unicodedata, re
 
-def exec_short(s, d):  # helper
+def exec_short(s, d):
     """
     Convenience function. Accepts 'opt' and 'spin=fm', hides opt, evaluates [1,2,3] and unquoted string. No overwrite.
     """
@@ -32,7 +32,6 @@ def slugify(value):
     value = re.sub(r'[^\w\s-]', '', value).strip().lower()
     value = re.sub(r'[-\s]+', '-', value)
     return value
-
 
 # ----------------------------------------------------------------------------------------------------------------------
 def uuid4():
