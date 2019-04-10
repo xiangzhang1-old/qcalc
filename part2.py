@@ -52,6 +52,7 @@ def uuid4():
 uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # 关系 (uuid, object)
 from_to = pd.DataFrame(columns=['from', 'to'])                              # 关系 (uuid "from", uuid "to")
 parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
+original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # 关系 (uuid "original", uuid "doppelganger")
 
 def object2s(relation, column1, object1, column2):
     # 求所有 object2 使得 relation(column1 = object1, column2 = object2) 成立
@@ -82,7 +83,7 @@ def run1(d, struct):
     subprocess.run("submit")
 
 # ----------------------------------------------------------------------------------------------------------------------
-original_doppelganger = pd.DataFrame(columns=['original', 'doppelganger'])  # 关系 (uuid "original", uuid "doppelganger")
+
 # ----------------------------------------------------------------------------------------------------------------------
 def suggest_host():
     pass

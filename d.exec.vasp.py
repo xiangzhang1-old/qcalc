@@ -3,13 +3,13 @@ hidden = {'hidden', 'phi0', 'rho0', 'rho'}
 #
 if phi0 == 0:
     istart = 0
-elif isinstance(phi0, str):
+elif phi0:
     istart = 1
 if rho0 == 0:
     icharg = 2
-elif isinstance(rho0, str):
+elif rho0:
     icharg = 1
-elif isinstance(rho, str):
+elif rho:
     icharg = 11
 #
 assert None not in [istart, icharg]
