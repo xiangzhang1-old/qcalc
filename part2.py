@@ -33,6 +33,33 @@ def slugify(value):
     value = re.sub(r'[-\s]+', '-', value)
     return value
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+def uuid4():
+    """
+    Generates a random UUID.UUID4 encoded in base57.
+    Taken from shortuuid.
+    Encodes a UUID into a string (LSB first) according to the alphabet. If leftmost (MSB) bits 0, string might be shorter
+    """
+    alphabet = list("23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+    unique_id = uuid.uuid4().int
+    output = ""
+    while unique_id:
+        unique_id, digit = divmod(unique_id, len(alphabet))
+        output += alphabet[digit]
+    return output
+
+uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # 关系 (uuid, object)
+from_to = pd.DataFrame(columns=['from', 'to'])                              # 关系 (uuid "from", uuid "to")
+parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
+
+def object2s(relation, column1, object1, column2):
+    # 求所有 object2 使得 relation(column1 = object1, column2 = object2) 成立
+    uuid1 = uuid_object.query("object = @object1").uuid.item()
+    uuid2 = relation.query(f"{column1} = {uuid1}")[column2].item()
+    object2s = uuid_object.query(f"uuid = {uuid2}").object
+    return object2s
+
 # ----------------------------------------------------------------------------------------------------------------------
 # bash, python 一轮一轮。prev, sinfo, sbatch, rsync。
 # 常见代码块的自动化

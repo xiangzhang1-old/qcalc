@@ -58,7 +58,7 @@ class Struct(object):
 
 """
 考虑单电子单核解。考虑多电子多核解。考虑其近似最小化问题。计算参数：材料，求值模式，简化近似，辅助行为。一一对应 (args = True) kwargs，
-其规则变换对应 exec(kwargs)。
+其规则变换对应 kwargs.exec。
 hidden = {'hidden'}：非官方 kwargs
 phi0 = path, rho0 = 0, rho = path：KS波函数、电荷密度的初值
 kpoints = [template, param, ...]：KPOINTS 定式与参数
@@ -105,15 +105,3 @@ class D(collections.MutableMapping):
                     except:
                         if i == 2:
                             raise
-
-# ----------------------------------------------------------------------------------------------------------------------
-uuid_object = pd.DataFrame(columns=['uuid', 'object'])                      # 关系 (uuid, object)
-prev_next = pd.DataFrame(columns=['prev', 'next'])                          # 关系 (uuid "prev", uuid "next")
-parent_child = pd.DataFrame(columns=['parent', 'child'])                    # 关系 (uuid "parent", uuid "child")
-
-def object2s(relation, column1, object1, column2):
-    # 求所有 object2 使得 relation(column1 = object1, column2 = object2) 成立
-    uuid1 = uuid_object.query("object = @object1").uuid.item()
-    uuid2 = relation.query(f"{column1} = {uuid1}")[column2].item()
-    object2s = uuid_object.query(f"uuid = {uuid2}").object.item()
-    return object2s
