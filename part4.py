@@ -60,26 +60,7 @@ def object2s(relation, column1, object1, column2):
     object2s = uuid_object.query(f"uuid = {uuid2}").object
     return object2s
 
-# ----------------------------------------------------------------------------------------------------------------------
-# bash, python 一轮一轮。prev, sinfo, sbatch, rsync。
-# 常见代码块的自动化
 
-
-status = [0, 1, ..., 'Complete', 'Error']
-
-# optionally
-def is_prev_status_complete():
-def ready1(d, struct):
-    return 前节点已完成
-
-def run1(d, struct):
-    #
-    d.exec_file("d.exec.vasp.py")
-    #
-    d_struct_to_vasp(d, struct)
-    d_to_slurm(d)
-    #
-    subprocess.run("submit")
 
 # ----------------------------------------------------------------------------------------------------------------------
 
