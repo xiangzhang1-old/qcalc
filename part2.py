@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------------------------------------------------
-# vasp(d, struct)
+# # vasp(d, struct)
 
 def d_struct_to_vasp(d, struct):
     """
@@ -26,7 +26,7 @@ def d_struct_to_vasp(d, struct):
         subprocess.run(f"rsync -a -h --info=progress2 {path} .", shell=True)
 
 # ----------------------------------------------------------------------------------------------------------------------
-# slurm(d)
+# slurm(d, struct)
 
 def submit(d):
     template(i = f"{LIB_PATH}/submit.{d['transforms'][0]}.{d['host']}", o = "submit", d = d)
