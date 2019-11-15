@@ -30,8 +30,6 @@ def template(i, o, d):
             )
 
 """---------------------------------------------------------------------------------------------------------------------
-opt → struct → elecstruct
-
 给定 struct Pb19S44，考虑其 elecstruct. 
 
 A struct is defined by a list of atomic coordinates, and optionally the repeat pattern."""
