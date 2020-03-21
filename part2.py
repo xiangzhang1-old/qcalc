@@ -1,12 +1,36 @@
+import os, subprocess
+import pandas as pd
+import ase
+
+LIB_PATH = os.path.dirname(os.path.realpath(__file__))
+POTCAR_PATH = "/home/xzhang1/src/VASP_PSP/potpaw_PBE.54/"
+
+def periodic_table_lookup(symbol, column, periodic_table = pd.read_excel(LIB_PATH + '/periodic_table.xlsx')):
+    """
+    Args:
+        symbol (str): 'Pb'
+        column (str): 'pot_encut'
+    """
+    return periodic_table.loc[periodic_table.symbol == symbol, column].values[0]
+
+def template(i, o, d):
+    """i.format(d)
+
+    Args:
+        i (str): input file path
+        o （str): output file path
+        d (dict):
+    """
+    with open(i, "r") as i:
+        with open(o, "w") as o:
+            o.write(
+                i.read().format(**d)
+            )
+
 # ----------------------------------------------------------------------------------------------------------------------
-# # vasp(d, struct)
 
 def d_struct_to_vasp(d, struct):
-    """
-    输出文本文件: INCAR, POSCAR4, KPOINTS, POTCAR, CHGCAR/WAVECAR
-    :param dict d:
-    :param Struct struct:
-    :return: converts d, struct to VASP files (INCAR, POSCAR, KPOINTS, POTCAR) in current directory
+    """输出 INCAR, POSCAR4, KPOINTS, POTCAR。拷贝 CHGCAR/WAVECAR。
     """
     with open("INCAR", "w") as file:
         for k, v in d.items():
@@ -26,19 +50,18 @@ def d_struct_to_vasp(d, struct):
         subprocess.run(f"rsync -a -h --info=progress2 {path} .", shell=True)
 
 # ----------------------------------------------------------------------------------------------------------------------
-# slurm(d, struct)
 
 def submit(d):
-    template(i = f"{LIB_PATH}/submit.{d['transforms'][0]}.{d['host']}", o = "submit", d = d)
-    template(i = f"{LIB_PATH}/job.{d['transforms'][0]}.{d['host']}", o = "job", d = d)
+    template(i = f"{LIB_PATH}/submit.{d['software']}.{d['cluster']}", o = "submit", d = d)
+    template(i = f"{LIB_PATH}/job.{d['software']}.{d['cluster']}", o = "job", d = d)
     subprocess.run("bash submit", shell=True)
 
 def is_complete_on_slurm(d):
-    template(i=f"{LIB_PATH}/is_complete_on_slurm.{d['host']}", o="is_complete", d = d)
+    template(i=f"{LIB_PATH}/is_complete.{d['cluster']}", o="is_complete", d = d)
     return eval(subprocess.check_output("bash is_complete", shell=True))
 
 def retrieve(d):
-    template(i=f"{LIB_PATH}/retrieve.{d['host']}", o="retrieve", d = d)
+    template(i=f"{LIB_PATH}/retrieve.{d['cluster']}", o="retrieve", d = d)
     subprocess.run("bash retrieve", shell=True)
 
 
