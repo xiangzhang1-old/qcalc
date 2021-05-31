@@ -1,5 +1,18 @@
 # ----------------------------------------------------------------------------------------------------------------------
-"""Op"""
+"""
+Consider:
+    d.exec()
+    d_struct_to_vasp()
+    submit()
+    is_complete()
+    is_complete()
+    retrieve()
+    # population analysis
+    # check opt_struct - struct
+
+
+
+"""
 
 op_dict = {
     'vasp': [
@@ -13,7 +26,7 @@ op_dict = {
     ]
 }
 
-class Graph:
+class Workflow:
     """A collection of ops, to be stepwise executed.
 
     Example:

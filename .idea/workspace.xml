@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fc33646-48ab-4c97-9390-b8f79d0a36d7" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/qcalc.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/qcalc.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/part1.py" beforeDir="false" afterPath="$PROJECT_DIR$/part1.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/part2.py" beforeDir="false" afterPath="$PROJECT_DIR$/part2.py" afterDir="false" />
@@ -44,7 +43,6 @@
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
@@ -55,6 +53,7 @@
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="project-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -284,7 +283,14 @@
       <option name="project" value="LOCAL" />
       <updated>1559085938950</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary=".">
+      <created>1584810600284</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1584810600284</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
@@ -320,12 +326,16 @@
     <MESSAGE value="type" />
     <MESSAGE value="slurm_computable, vasp, from_to_related，3件事" />
     <MESSAGE value="resume ." />
-    <MESSAGE value="." />
     <MESSAGE value="太长解决" />
     <MESSAGE value="05/28继续" />
-    <option name="LAST_COMMIT_MESSAGE" value="05/28继续" />
+    <MESSAGE value="." />
+    <option name="LAST_COMMIT_MESSAGE" value="." />
   </component>
   <component name="WindowStateProjectService">
+    <state x="591" y="145" key="CommitChangelistDialog2" timestamp="1584810599737">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="591" y="145" key="CommitChangelistDialog2/0.0.1920.1080@0.0.1920.1080" timestamp="1584810599737" />
     <state x="468" y="148" key="SettingsEditor" timestamp="1584672685377">
       <screen x="0" y="23" width="1920" height="970" />
     </state>
@@ -338,13 +348,17 @@
       <screen x="0" y="23" width="1920" height="970" />
     </state>
     <state x="616" y="342" key="com.intellij.ide.util.TipDialog/0.23.1920.970@0.23.1920.970" timestamp="1584496367122" />
+    <state x="553" y="188" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1584815276219">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="553" y="188" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1080@0.0.1920.1080" timestamp="1584815276219" />
     <state x="749" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584555512149">
       <screen x="0" y="23" width="1920" height="970" />
     </state>
     <state x="749" y="432" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.23.1920.970@0.23.1920.970" timestamp="1584555512149" />
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1584809837865">
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1584820341839">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1584809837865" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/0.0.1920.1080@0.0.1920.1080" timestamp="1584820341839" />
   </component>
 </project>

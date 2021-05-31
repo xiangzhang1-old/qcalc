@@ -1,36 +1,18 @@
-import os, subprocess
-import pandas as pd
+import subprocess
 import ase
-
-LIB_PATH = os.path.dirname(os.path.realpath(__file__))
-POTCAR_PATH = "/home/xzhang1/src/VASP_PSP/potpaw_PBE.54/"
-
-def periodic_table_lookup(symbol, column, periodic_table = pd.read_excel(LIB_PATH + '/periodic_table.xlsx')):
-    """
-    Args:
-        symbol (str): 'Pb'
-        column (str): 'pot_encut'
-    """
-    return periodic_table.loc[periodic_table.symbol == symbol, column].values[0]
-
-def template(i, o, d):
-    """i.format(d)
-
-    Args:
-        i (str): input file path
-        o （str): output file path
-        d (dict):
-    """
-    with open(i, "r") as i:
-        with open(o, "w") as o:
-            o.write(
-                i.read().format(**d)
-            )
+from part0 import POTCAR_PATH, LIB_PATH, periodic_table_lookup, template
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def d_struct_to_vasp(d, struct):
+def to_vasp(d, struct):
     """输出 INCAR, POSCAR4, KPOINTS, POTCAR。拷贝 CHGCAR/WAVECAR。
+
+    Args:
+        d (dict): # 材料相关，求值模式，简化近似，辅助行为
+            hidden: {'hidden'}              # 不写入 INCAR
+            kpoints: ['template', ...]      # KPOINTS 模板
+            psi0, rho0, rho = 0 | path      # 迭代初始值
+        struct (Struct):
     """
     with open("INCAR", "w") as file:
         for k, v in d.items():
@@ -51,18 +33,27 @@ def d_struct_to_vasp(d, struct):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-def submit(d):
+def to_slurm(d):
+    """
+    Args:
+        d (dict):
+            software: 'vasp'
+            cluster: 'nersc'
+    """
     template(i = f"{LIB_PATH}/submit.{d['software']}.{d['cluster']}", o = "submit", d = d)
     template(i = f"{LIB_PATH}/job.{d['software']}.{d['cluster']}", o = "job", d = d)
+
+def submit():
     subprocess.run("bash submit", shell=True)
 
-def is_complete_on_slurm(d):
+def is_complete(d):
     template(i=f"{LIB_PATH}/is_complete.{d['cluster']}", o="is_complete", d = d)
     return eval(subprocess.check_output("bash is_complete", shell=True))
 
 def retrieve(d):
     template(i=f"{LIB_PATH}/retrieve.{d['cluster']}", o="retrieve", d = d)
     subprocess.run("bash retrieve", shell=True)
+
 
 
 

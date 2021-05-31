@@ -25,20 +25,7 @@ class Struct(object):
         return collections.OrderedDict(self.X.symbol.value_counts(ascending=True))
 
 class D(collections.MutableMapping):
-    """
-    计算：
-        ops = ['vasp', 'slurm']
-    计算参数，包括材料相关，求值模式，简化近似，辅助行为：
-        vasp:
-            hidden = {'hidden'}: 不写入 INCAR
-            kpoints = [template, ...]：KPOINTS 模板
-            phi0 = path, rho0 = 0, rho = path：迭代初始值
-            path
-        slurm:
-            remote
-    参数规则:
-        d.exec。
-    """
+    # emulates dict
     def __init__(self, *args, **kwargs):
         self._dict = dict()
         self.update(dict(*args, **kwargs))
@@ -46,10 +33,10 @@ class D(collections.MutableMapping):
     def __getitem__(self, key):
         return self._dict[key]
 
-    # 避免意外 overwrite
     def __setitem__(self, key, value):
+        # ValueError: ('overwrite', 'isif', 4, 'with', 3)
         if key in self._dict and self._dict[key] != value:
-            raise SyntaxError("overwrite")
+            raise ValueError('overwrite', key, self._dict[key], 'with', value)
         self._dict[key] = value
 
     def __delitem__(self, key):
@@ -62,15 +49,7 @@ class D(collections.MutableMapping):
         return len(self._dict)
 
     def exec(self, expr):
+        # d.exec('isif=4')
         exec(expr, globals(), self)
 
-    # exec 文件用 # 分块
-    def exec_file(self, file):
-        for i in range(3):
-            with open(file, "r") as file:
-                for block in file.read().split('#'):
-                    try:
-                        self.exec('#' + block)
-                    except:
-                        if i == 2:
-                            raise
+

@@ -19,17 +19,13 @@ def slugify(value):
     value = re.sub(r'[-\s]+', '-', value)
     return value
 
-def exec_alternative(d, text):
-    """
-    Args:
-        d (D):
-        text (str): insulator, pbs, qd, spin=fm
-    """
+def exec_shorthand(d, text):
+    # exec_shorthand(d, "insulator, qd, spin=fm")
     for _ in text.split(','):
         _ = slugify(_)
         if '=' not in _:        # insulator
             d[_] = None
-        else:                   # kpoints=[1,1] or spin=fm
+        else:                   # kpoints=[1,1] or sp=in=fm
             l, r = _.split('=')
             l, r = slugify(l), slugify(r)
             try:                # kpoints=[1,1]
@@ -37,6 +33,16 @@ def exec_alternative(d, text):
             except NameError:   # spin=fm
                 d[l] = r
 
+def exec_file(d, file):
+    # 文件用 # 分块
+    for i in range(3):
+        with open(file, "r") as file:
+            for block in file.read().split('#'):
+                try:
+                    d.exec('#' + block)
+                except:
+                    if i == 2:
+                        raise
 # ----------------------------------------------------------------------------------------------------------------------
 
 def uuid4():
